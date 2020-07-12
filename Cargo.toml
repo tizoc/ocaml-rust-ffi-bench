@@ -1,0 +1,21 @@
+[package]
+name = "ocaml-rs-ffi-bench"
+version = "0.1.0"
+authors = ["Bruno Deferrari <utizoc@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+ocaml-util = { path = "./ocaml-util" }
+ocaml-rs-0_14 = { path = "./ocaml-rs-0_14" }
+ocaml-rs-0_09 = { path = "./ocaml-rs-0_09" }
+#dmz-customized = { path = "./dmz-customized" }
+ocaml = "0.14.2"
+
+[dev-dependencies]
+criterion = "0.3"
+
+[[bench]]
+name = "benchmark"
+harness = false
