@@ -1,0 +1,15 @@
+name: "rusty"
+opam-version: "0.2.0"
+maintainer: "Sophia Gold <sophiagoldnyc@gmail.com>"
+authors: ["Stephen Dolan <stephen.dolan@cl.cam.ac.uk>, Sophia Gold <sophiagoldnyc@gmail.com>"]
+homepage: "https://github.com/Sophia-Gold/dmz"
+dev-repo: "https://github.com/Sophia-Gold/dmz.git"
+license: "ISC"
+depends: [
+  "ocamlfind" { build }
+  "dune" { build & >= "1.0.1" }
+]
+build: [
+  [ "dune" "build" "-p" name "-j" jobs ]
+]
+

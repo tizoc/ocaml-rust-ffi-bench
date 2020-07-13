@@ -1,0 +1,27 @@
+(rule
+ (targets allocpair.o)
+ (deps (:source allocpair.c))
+ (action (run %{ocamlopt} -thread -ccopt -pthread %{source} -o %{targets})))
+
+(executable
+ (name printmod)
+ (modules printmod)
+ (libraries unix threads)
+ (link_deps allocpair.o ../target/debug/libexternals.a)
+ (link_flags -thread -ccopt -pthread example/src/allocpair.o example/target/debug/libexternals.a))
+
+(rule
+ (targets externals.ml)
+ (deps (:gen printmod.exe))
+ (action (with-stdout-to %{targets} (run %{gen}))))
+
+(library
+ (name externals)
+ (modules externals)
+ (libraries unix threads bigstring)
+ (c_library_flags -lpthread example/src/allocpair.o example/target/debug/libexternals.a))
+
+(executable
+ (public_name main)
+ (modules main)
+ (libraries externals))
