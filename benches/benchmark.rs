@@ -68,7 +68,7 @@ fn criterion_benchmark(c: &mut Criterion) {
     c.bench_function("ocaml_rs_0_09::increment_bytes(256bytes, first10)", |b| {
         b.iter(|| ocaml_rs_0_09::increment_bytes(black_box(&bytes256), black_box(first10)))
     });
-    ocaml_util::collect_and_compact();*/
+    ocaml_util::collect_and_compact();
     c.bench_function("ocaml_rs_0_14::increment_bytes(256bytes, first10)", |b| {
         b.iter(|| ocaml_rs_0_14::increment_bytes(black_box(&bytes256), black_box(first10)))
     });
