@@ -9,13 +9,6 @@ lazy_static! {
         ocaml_named_function("increment_bytes");
 }
 
-fn ocaml_of_str(bytes: &str) -> RawValue {
-    with_gc(|gc| {
-        let result = dmz::call! { alloc_string(gc, bytes) };
-        result.eval()
-    })
-}
-
 fn string_of_ocaml(bytes: RawValue) -> String {
     let len = unsafe { dmz::caml_string_length(bytes) };
     let ptr = bytes as *const u8;
@@ -25,23 +18,17 @@ fn string_of_ocaml(bytes: RawValue) -> String {
     }
 }
 
-pub fn ocaml_increment_bytes_internal(bytes: RawValue, first_n: RawValue) -> RawValue {
-    with_gc(|gc| {
-        let arg1: Val<String> = unsafe { Val::new(gc, bytes) };
-        let arg2: Val<dmz::int> = unsafe { Val::new(gc, first_n) };
+pub fn increment_bytes(bytes: &str, first_n: usize) -> String {
+    let result = with_gc(|gc| {
+        let bytes = dmz::call! { alloc_string(gc, bytes) };
+        let first_n: Val<dmz::int> = unsafe { Val::new(gc, ocaml_int_of_i32(first_n as i32)) };
         let result: Val<String> = OCAML_INCREMENT_BYTES
-            .call2(arg1, arg2)
+            .call2(bytes, first_n)
             .expect("OCaml 'increment_bytes' call result")
             .mark(gc)
             .eval(gc);
         result.eval()
-    })
-}
-
-pub fn increment_bytes(bytes: &str, first_n: usize) -> String {
-    let bytes = ocaml_of_str(bytes);
-    let first_n = ocaml_int_of_i32(first_n as i32);
-    let result = ocaml_increment_bytes_internal(bytes, first_n);
+    });
     return string_of_ocaml(result);
 }
 
@@ -53,20 +40,15 @@ fn i32_of_ocaml_int(num: RawValue) -> i32 {
     return (num as i32) >> 1;
 }
 
-fn ocaml_twice_internal(num: RawValue) -> RawValue {
-    with_gc(|gc| {
-        let arg: Val<dmz::int> = unsafe { Val::new(gc, num) };
+pub fn twice(num: i32) -> i32 {
+    let result = with_gc(|gc| {
+        let num: Val<dmz::int> = unsafe { Val::new(gc, ocaml_int_of_i32(num)) };
         let result: Val<dmz::int> = OCAML_TWICE
-            .call(arg)
+            .call(num)
             .expect("OCaml 'twice' call result")
             .mark(gc)
             .eval(gc);
         result.eval()
-    })
-}
-
-pub fn twice(n: i32) -> i32 {
-    let n = ocaml_int_of_i32(n);
-    let result = ocaml_twice_internal(n);
+    });
     return i32_of_ocaml_int(result);
 }
