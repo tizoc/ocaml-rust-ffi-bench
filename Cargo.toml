@@ -10,7 +10,7 @@ edition = "2018"
 ocaml-util = { path = "./ocaml-util" }
 ocaml-rs-0_14 = { path = "./ocaml-rs-0_14" }
 ocaml-rs-0_09 = { path = "./ocaml-rs-0_09" }
-#dmz-customized = { path = "./dmz-customized" }
+dmz-customized = { path = "./dmz-customized" }
 ocaml = "0.14.2"
 
 [dev-dependencies]

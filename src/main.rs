@@ -22,5 +22,14 @@ fn main() {
     );
     println!("Result for twice 0.9.3: {}", twice_result_09);
 
+    let increment_bytes_result_dmz = dmz_customized::increment_bytes(bytes, 10);
+    let twice_result_dmz = dmz_customized::twice(10);
+    println!(
+        "Result for increment_bytes dmz: {}",
+        increment_bytes_result_dmz
+    );
+    println!("Result for twice tmz: {}", twice_result_dmz);
+
+
     ocaml::runtime::shutdown();
 }
