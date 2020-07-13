@@ -1,8 +1,8 @@
-#![feature(nll)]
+//#![feature(nll)]
 #![allow(dead_code)]
 #![allow(non_upper_case_globals)]
 #![allow(non_snake_case)]
-#![feature(core_intrinsics)]
+//#![feature(core_intrinsics)]
 
 use std::cell::Cell;
 use std::ptr;
@@ -78,11 +78,10 @@ extern "C" {
     pub fn caml_alloc_ntuple(numvals: Uintnat, vals: RawValue) -> RawValue;
     fn caml_alloc_string(len: usize) -> RawValue;
     fn caml_alloc_initialized_string(len: usize, contents: *const u8) -> RawValue;
-    fn caml_string_length(s: RawValue) -> usize;
+    pub fn caml_string_length(s: RawValue) -> usize;
 
-    fn caml_ba_alloc_dims(flags: RawValue, dims: RawValue, data: *const u8) -> RawValue;    
+    fn caml_ba_alloc_dims(flags: RawValue, dims: RawValue, data: *const u8) -> RawValue;
     // fn caml_ba_alloc_dims(flags: RawValue, dims: RawValue, data: *const u8, len: intnat) -> RawValue;
-
 
     fn caml_copy_double(f: f64) -> RawValue;
     fn caml_copy_int32(f: i32) -> RawValue;
@@ -276,7 +275,7 @@ pub struct EE {}
 impl MLType for EE {
     fn name() -> String {
         "'e".to_owned()
-    } 
+    }
 }
 
 pub fn type_name<T: MLType>() -> String {
@@ -356,7 +355,7 @@ impl<'a, A: MLType> Val<'a, List<A>> {
         let mut vec = vec![];
         loop {
             match lst.as_list() {
-                CList::Nil => break, 
+                CList::Nil => break,
                 CList::Cons {x, xs } => {
                     vec.push(x);
                     lst = xs;
@@ -629,7 +628,7 @@ macro_rules! call {
     {
         $fn:ident
             ( $gc:ident, $( $arg:expr ),* )
-    } => {{ 
+    } => {{
         let res = $fn( GCtoken {}, $( $arg ),* );
         res.mark($gc).eval($gc)
     }}
@@ -689,3 +688,5 @@ macro_rules! camlmod {
         }
     };
 }
+
+pub mod call;
