@@ -23,6 +23,11 @@ fn criterion_benchmark(c: &mut Criterion) {
         b.iter(|| ocaml_rs_0_14::twice(black_box(20)))
     });
     ocaml_util::collect_and_compact();
+    // Pointer-safe version with custom ocaml funcall implementation
+    c.bench_function("ocaml_rs_0_14::twice_safe(20)", |b| {
+        b.iter(|| ocaml_rs_0_14::twice_safe(black_box(20)))
+    });
+    ocaml_util::collect_and_compact();
     c.bench_function("dmz_customized::twice(20)", |b| {
         b.iter(|| dmz_customized::twice(black_box(20)))
     });
