@@ -50,3 +50,14 @@ pub fn twice(num: i32) -> i32 {
     });
     return utils::i32_of_ocaml_int(result);
 }
+
+pub fn twice_dynamic_lookup(num: i32) -> i32 {
+    let ocaml_twice: OCamlFun = OCamlFun::named("twice").expect("Missing 'twice' function");
+    let result = with_gc(|gc| {
+        let num: Val<dmz::int> = unsafe { Val::new(gc, utils::ocaml_int_of_i32(num)) };
+        let result = call_ocaml! {ocaml_twice(gc, num)};
+        let result: Val<dmz::int> = result.expect("Error in 'twice' call result");
+        result.eval()
+    });
+    return utils::i32_of_ocaml_int(result);
+}

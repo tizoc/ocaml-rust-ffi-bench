@@ -28,6 +28,12 @@ fn criterion_benchmark(c: &mut Criterion) {
     });
     ocaml_util::collect_and_compact();
 
+    // Test with dynamic lookup of ocaml function
+    c.bench_function("dmz_customized::twice_dynamic_lookup(20)", |b| {
+        b.iter(|| dmz_customized::twice_dynamic_lookup(black_box(20)))
+    });
+    ocaml_util::collect_and_compact();
+
     // Calls with copied byte arrays
     c.bench_function("ocaml_rs_0_09::increment_bytes(16bytes, first10)", |b| {
         b.iter(|| ocaml_rs_0_09::increment_bytes(black_box(&bytes16), black_box(first10)))
