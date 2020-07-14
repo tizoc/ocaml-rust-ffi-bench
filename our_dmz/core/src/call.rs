@@ -83,6 +83,7 @@ impl OCamlFun {
         self.handleResult(result)
     }
 
+    #[inline]
     fn handleResult<R>(self, result: RawValue) -> Result<GCResult1<R>, Error> {
         if is_exception_result(result) {
             let ex = extract_exception(result);
