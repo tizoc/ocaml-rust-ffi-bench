@@ -93,3 +93,20 @@ impl OCamlFun {
         }
     }
 }
+
+#[macro_export]
+macro_rules! call_ocaml {
+    { $fn:ident( $gc:ident, $arg:expr ) } => {
+        {
+            let res = $fn.call($arg);
+            res.map(|v| v.mark($gc).eval($gc))
+        }
+    };
+
+    { $fn:ident( $gc:ident, $arg1:expr, $arg2:expr ) } => {
+        {
+            let res = $fn.call2($arg1, $arg2);
+            res.map(|v| v.mark($gc).eval($gc))
+        }
+    }
+}
