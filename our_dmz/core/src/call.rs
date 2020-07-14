@@ -74,25 +74,21 @@ impl OCamlFun {
     }
 
     pub fn call<T, R>(self, arg: Val<T>) -> Result<GCResult1<R>, Error> {
-        let v = unsafe { caml_callback_exn(*self.0, arg.raw) };
-
-        if is_exception_result(v) {
-            let ex = extract_exception(v);
-            Err(Error::Caml(CamlError::Exception(ex)))
-        } else {
-            let gv = GCResult1::of(v);
-            Ok(gv)
-        }
+        let result = unsafe { caml_callback_exn(*self.0, arg.raw) };
+        self.handleResult(result)
     }
 
     pub fn call2<T, U, R>(self, arg1: Val<T>, arg2: Val<U>) -> Result<GCResult1<R>, Error> {
-        let v = unsafe { caml_callback2_exn(*self.0, arg1.raw, arg2.raw) };
+        let result = unsafe { caml_callback2_exn(*self.0, arg1.raw, arg2.raw) };
+        self.handleResult(result)
+    }
 
-        if is_exception_result(v) {
-            let ex = extract_exception(v);
+    fn handleResult<R>(self, result: RawValue) -> Result<GCResult1<R>, Error> {
+        if is_exception_result(result) {
+            let ex = extract_exception(result);
             Err(Error::Caml(CamlError::Exception(ex)))
         } else {
-            let gv = GCResult1::of(v);
+            let gv = GCResult1::of(result);
             Ok(gv)
         }
     }
