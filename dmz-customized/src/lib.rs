@@ -1,8 +1,5 @@
-#[macro_use]
-extern crate dmz;
-
 use dmz::call::OCamlFun;
-use dmz::{alloc_string, with_gc, GCtoken, Val};
+use dmz::{alloc_string, with_gc, GCtoken, Val, call_ocaml};
 use lazy_static::lazy_static;
 
 lazy_static! {
