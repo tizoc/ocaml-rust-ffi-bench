@@ -21,6 +21,10 @@ impl OCamlBytes {
     }
 
     pub fn keep(&mut self) {
+        // Register the memory address of self.0 because
+        // thats where the pointer to the OCaml string is stored.
+        // This way, the GC will update that place of memory with
+        // a new pointer if the string is moved.
         unsafe {
             let ptr = (&mut self.0) as *mut Value as *mut isize;
             ocaml::sys::caml_register_global_root(ptr);
