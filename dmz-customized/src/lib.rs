@@ -2,32 +2,14 @@ use dmz::call::OCamlFun;
 use dmz::{alloc_string, call_ocaml, with_gc, GCtoken, Val};
 use lazy_static::lazy_static;
 
+mod utils;
+
 lazy_static! {
     static ref OCAML_TWICE: OCamlFun = OCamlFun::named("twice").expect("Missing 'twice' function");
     static ref OCAML_INCREMENT_BYTES: OCamlFun =
         OCamlFun::named("increment_bytes").expect("Missing 'increment_bytes' function");
 }
 
-mod utils {
-    use dmz::RawValue;
-
-    pub fn ocaml_int_of_i32(num: i32) -> RawValue {
-        return ((num as i64) << 1) | 1;
-    }
-
-    pub fn i32_of_ocaml_int(num: RawValue) -> i32 {
-        return (num as i32) >> 1;
-    }
-
-    pub fn string_of_ocaml(bytes: RawValue) -> String {
-        let len = unsafe { dmz::caml_string_length(bytes) };
-        let ptr = bytes as *const u8;
-        unsafe {
-            let slice = ::std::slice::from_raw_parts(ptr, len);
-            std::str::from_utf8(slice).expect("Invalid UTF-8").into()
-        }
-    }
-}
 
 pub fn increment_bytes(bytes: &str, first_n: usize) -> String {
     let result = with_gc(|gc| {
