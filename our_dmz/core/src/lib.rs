@@ -578,7 +578,7 @@ fn alloc_blank_string(_token: GCtoken, len: usize) -> GCResult1<&'static str> {
 pub fn alloc_string(token: GCtoken, s: &str) -> GCResult1<&'static str> {
     let r = alloc_blank_string(token, s.len());
     unsafe {
-        ptr::copy_nonoverlapping(s.to_string().as_ptr(), r.raw as *mut u8, s.len());
+        ptr::copy_nonoverlapping(s.as_ptr(), r.raw as *mut u8, s.len());
     }
     r
 }
