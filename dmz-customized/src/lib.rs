@@ -1,5 +1,5 @@
 use dmz::call::OCamlFun;
-use dmz::{alloc_string, with_gc, GCtoken, Val, call_ocaml};
+use dmz::{alloc_string, call_ocaml, with_gc, GCtoken, Val};
 use lazy_static::lazy_static;
 
 lazy_static! {
