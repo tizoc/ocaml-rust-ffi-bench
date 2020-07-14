@@ -1,6 +1,9 @@
 use lazy_static::lazy_static;
 use ocaml::{FromValue, ToValue};
 
+// FIXME: not fully safe, ocaml-rs returns the actual value and
+// not a pointer to the location with the value. There is no guarantee
+// in OCaml's spec that says that the location will not change.
 lazy_static! {
     static ref OCAML_TWICE: ocaml::value::Value =
         ocaml::named_value("twice").expect("Missing 'twice' function");
