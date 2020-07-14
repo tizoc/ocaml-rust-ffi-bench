@@ -1,8 +1,9 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use dmz_customized;
+use ocaml::ToValue;
 use ocaml_rs_0_09;
 use ocaml_rs_0_14;
-use dmz_customized;
-use ocaml_util;
+use ocaml_util::ocaml_bytes::OCamlBytes;
 
 fn criterion_benchmark(c: &mut Criterion) {
     ocaml_util::init_ocaml_runtime();
@@ -13,6 +14,9 @@ fn criterion_benchmark(c: &mut Criterion) {
     let bytes32 = String::from("0000000000000000000000000000000000000000000000000000000000000000");
     let bytes64 = String::from("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
     let bytes256 = String::from("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
+    let mut ocaml_bytes256 = OCamlBytes::alloc(256);
+
+    ocaml_bytes256.keep();
 
     // Basic call with integer
     c.bench_function("ocaml_rs_0_09::twice(20)", |b| {
@@ -88,6 +92,26 @@ fn criterion_benchmark(c: &mut Criterion) {
         b.iter(|| dmz_customized::increment_bytes(black_box(&bytes256), black_box(first10)))
     });
     ocaml_util::collect_and_compact();
+
+    c.bench_function(
+        "ocaml_rs_0_14::ocaml_increment_bytes(256bytes_shared, first10)",
+        |b| {
+            b.iter(|| {
+                ocaml_rs_0_14::ocaml_increment_bytes(
+                    black_box(ocaml_bytes256.to_value()),
+                    black_box(first10.to_value()),
+                );
+                // Restore bytes
+                //ocaml_rs_0_14::ocaml_decrement_bytes(
+                //    black_box(ocaml_bytes256.to_value()),
+                //    black_box(first10.to_value()),
+                //);
+            })
+        },
+    );
+    ocaml_util::collect_and_compact();
+
+    ocaml_bytes256.dispose();
 
     ocaml::shutdown();
 }
