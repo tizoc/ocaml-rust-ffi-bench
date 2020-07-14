@@ -1,12 +1,12 @@
-use dmz::call::{ocaml_named_function, OCamlFun};
+use dmz::call::OCamlFun;
 use dmz::RawValue;
 use dmz::{alloc_string, with_gc, GCtoken, Val};
 use lazy_static::lazy_static;
 
 lazy_static! {
-    static ref OCAML_TWICE: Val<'static, OCamlFun> = ocaml_named_function("twice");
-    static ref OCAML_INCREMENT_BYTES: Val<'static, OCamlFun> =
-        ocaml_named_function("increment_bytes");
+    static ref OCAML_TWICE: OCamlFun = OCamlFun::named("twice").expect("Missing 'twice' function");
+    static ref OCAML_INCREMENT_BYTES: OCamlFun =
+        OCamlFun::named("increment_bytes").expect("Missing 'increment_bytes' function");
 }
 
 fn string_of_ocaml(bytes: RawValue) -> String {

@@ -1,4 +1,4 @@
-use crate::{RawValue, Val, GCResult1, Tag_val, Closure_tag};
+use crate::{Closure_tag, GCResult1, RawValue, Tag_val, Val};
 
 extern "C" {
     fn caml_named_value(name: *const cty::c_char) -> *const RawValue;
@@ -44,9 +44,12 @@ pub const fn extract_exception(val: RawValue) -> RawValue {
     val & !3
 }
 
-pub struct OCamlFun(RawValue);
+#[derive(Copy, Clone)]
+pub struct OCamlFun(*const RawValue);
 
-fn get_named(name: &str) -> Option<RawValue> {
+unsafe impl Sync for OCamlFun {}
+
+fn get_named(name: &str) -> Option<*const RawValue> {
     unsafe {
         let s = match std::ffi::CString::new(name) {
             Ok(s) => s,
@@ -61,22 +64,17 @@ fn get_named(name: &str) -> Option<RawValue> {
             return None;
         }
 
-        Some(named as RawValue)
+        Some(named)
     }
 }
 
-pub fn ocaml_named_function(name: &str) -> Val<'static, OCamlFun> {
-    let func_ref = get_named(name).expect("Failed to obtain named function");
-    Val {
-        _marker: Default::default(),
-        raw: func_ref,
+impl OCamlFun {
+    pub fn named(name: &str) -> Option<OCamlFun> {
+        get_named(name).map(OCamlFun)
     }
-}
 
-impl<'a> Val<'a, OCamlFun> {
-    pub fn call<'gc, T, R>(self, arg: Val<'gc, T>) -> Result<GCResult1<R>, Error> {
-        let fptr = self.raw as *const RawValue;
-        let v = unsafe { caml_callback_exn(*fptr, arg.raw) };
+    pub fn call<T, R>(self, arg: Val<T>) -> Result<GCResult1<R>, Error> {
+        let v = unsafe { caml_callback_exn(*self.0, arg.raw) };
 
         if is_exception_result(v) {
             let ex = extract_exception(v);
@@ -87,9 +85,8 @@ impl<'a> Val<'a, OCamlFun> {
         }
     }
 
-    pub fn call2<'gc, T, U, R>(self, arg1: Val<'gc, T>, arg2: Val<'gc, U>) -> Result<GCResult1<R>, Error> {
-        let fptr = self.raw as *const RawValue;
-        let v = unsafe { caml_callback2_exn(*fptr, arg1.raw, arg2.raw) };
+    pub fn call2<T, U, R>(self, arg1: Val<T>, arg2: Val<U>) -> Result<GCResult1<R>, Error> {
+        let v = unsafe { caml_callback2_exn(*self.0, arg1.raw, arg2.raw) };
 
         if is_exception_result(v) {
             let ex = extract_exception(v);
@@ -99,5 +96,4 @@ impl<'a> Val<'a, OCamlFun> {
             Ok(gv)
         }
     }
-
 }
