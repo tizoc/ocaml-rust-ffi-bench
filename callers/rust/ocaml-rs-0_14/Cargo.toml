@@ -1,5 +1,5 @@
 [package]
-name = "ocaml-rs-0_09"
+name = "ocaml-rs-0_14"
 version = "0.1.0"
 authors = ["Bruno Deferrari <utizoc@gmail.com>"]
 edition = "2018"
@@ -7,6 +7,9 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-ocaml = "0.9.3"
+ocaml = "0.14.2"
 lazy_static = "1.4"
-ocaml-util = { path = "../ocaml-util" }
+#features = ["link"]
+
+[dependencies.ocaml-util]
+path = "../../../ocaml-util"

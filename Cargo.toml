@@ -8,9 +8,9 @@ edition = "2018"
 
 [dependencies]
 ocaml-util = { path = "./ocaml-util" }
-ocaml-rs-0_14 = { path = "./ocaml-rs-0_14" }
-ocaml-rs-0_09 = { path = "./ocaml-rs-0_09" }
-dmz-customized = { path = "./dmz-customized" }
+ocaml-rs-0_14 = { path = "./callers/rust/ocaml-rs-0_14" }
+ocaml-rs-0_09 = { path = "./callers/rust/ocaml-rs-0_09" }
+dmz-customized = { path = "./callers/rust/dmz-customized" }
 ocaml = "0.14.2"
 
 [dev-dependencies]

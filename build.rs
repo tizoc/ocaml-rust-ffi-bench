@@ -3,9 +3,9 @@ use std::process::Command;
 
 fn main() {
     let out_dir = env::var("OUT_DIR").unwrap();
-    let dune_dir = "./_build/default/callable-ocaml";
+    let dune_dir = "./_build/default/callables/ocaml";
     Command::new("dune")
-        .args(&["build", "./callable-ocaml/callable.exe.o"])
+        .args(&["build", "./callables/ocaml/callable.exe.o"])
         .status()
         .expect("Dune failed");
     Command::new("cp")
