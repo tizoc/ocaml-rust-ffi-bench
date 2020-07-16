@@ -1,0 +1,17 @@
+(rule
+ (targets libcallable_ocaml_rs_0_14.a dllcallable_ocaml_rs_0_14.so)
+ (deps (glob_files *.rs)) ;; FIXME: .rs files are not in this dir, this will not work
+ (action
+  (progn
+   (run sh -c "cd %{project_root}/../../callables/rust/ocaml-rs_0_14; cargo build --release")
+   (run sh -c
+     "cp %{project_root}/../../callables/rust/ocaml-rs_0_14/target/release/libcallable_ocaml_rs_0_14.so ./dllcallable_ocaml_rs_0_14.so 2> /dev/null || \
+      cp %{project_root}/../../callables/rust/ocaml-rs_0_14/target/release/libcallable_ocaml_rs_0_14.dylib ./dllcallable_ocaml_rs_0_14.so"
+      )
+   (run cp %{project_root}/../../callables/rust/ocaml-rs_0_14/target/release/libcallable_ocaml_rs_0_14.a libcallable_ocaml_rs_0_14.a)
+   )))
+
+(executables
+ (names ocaml_rust_caller)
+ (foreign_archives callable_ocaml_rs_0_14)
+ (libraries core core_bench))
