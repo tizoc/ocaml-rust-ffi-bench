@@ -12,6 +12,10 @@ unsafe impl ToValue for OCamlBytes {
 }
 
 impl OCamlBytes {
+    pub fn from_value(bytes: Value) -> Self {
+        OCamlBytes(bytes)
+    }
+
     pub fn alloc(n: usize) -> OCamlBytes {
         let x = ocaml::frame!((x) {
             x = unsafe { Value(ocaml::sys::caml_alloc_string(n)) };

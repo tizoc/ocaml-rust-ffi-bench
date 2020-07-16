@@ -11,3 +11,4 @@ crate-type = ["staticlib", "cdylib"]
 
 [dependencies]
 ocaml = "0.14.2"
+ocaml-util = { path = "../../../ocaml-util" }

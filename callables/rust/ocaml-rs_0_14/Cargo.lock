@@ -5,6 +5,7 @@ name = "callable-ocaml-rs-0_14"
 version = "0.1.0"
 dependencies = [
  "ocaml",
+ "ocaml-util",
 ]
 
 [[package]]
@@ -42,6 +43,13 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b9aeade7aa1f166a4224ef6a04e22878899ddcb22b4725a3fa22eb00fd8e2d7d"
 dependencies = [
  "cty",
+]
+
+[[package]]
+name = "ocaml-util"
+version = "0.1.0"
+dependencies = [
+ "ocaml",
 ]
 
 [[package]]

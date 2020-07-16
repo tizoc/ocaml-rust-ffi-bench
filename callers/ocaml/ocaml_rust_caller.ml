@@ -1,5 +1,6 @@
 module OCamlRS014 = struct
   external increment_bytes: bytes -> int -> bytes = "rust_increment_bytes"
+  external increment_bytes_inplace: bytes -> int -> bytes = "rust_increment_bytes_inplace"
   external decrement_bytes: bytes -> int -> bytes = "rust_decrement_bytes"
   external twice: int -> int = "rust_twice"
 end
@@ -12,6 +13,7 @@ let () =
   let bytes32 = Bytes.make 32 '0' in
   let bytes64 = Bytes.make 64 '0' in
   let bytes256 = Bytes.make 256 '0' in
+  let bytes256shared = Bytes.make 256 '0' in
   Command.run (Bench.make_command [
     Bench.Test.create ~name:"OCamlRS014.twice(10)" (fun () ->
       ignore (OCamlRS014.twice n));
@@ -23,4 +25,6 @@ let () =
       ignore (OCamlRS014.increment_bytes bytes64 10));
     Bench.Test.create ~name:"OCamlRS014.increment_bytes(bytes256, 10)" (fun () ->
       ignore (OCamlRS014.increment_bytes bytes256 10));
+    Bench.Test.create ~name:"OCamlRS014.increment_bytes_inplace(bytes256shared, 10)" (fun () ->
+      ignore (OCamlRS014.increment_bytes_inplace bytes256shared 10));
   ])
