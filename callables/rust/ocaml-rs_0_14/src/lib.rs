@@ -19,6 +19,19 @@ fn u8vec_from_ocaml_bytes(bytes: ocaml::Value) -> Vec<u8> {
     }
 }
 
+// ocaml-rs maps Vec<u8> into an OCaml array, not "bytes" as we
+// want here.
+fn u8vec_to_ocaml_bytes(bytes: Vec<u8>) -> ocaml::Value {
+    unsafe {
+        let len = bytes.len();
+        let src_ptr = bytes.as_ptr();
+        let value = ocaml::sys::caml_alloc_string(len);
+        let dst_ptr = ocaml::sys::string_val(value);
+        core::ptr::copy_nonoverlapping(src_ptr, dst_ptr, len);
+        ocaml::Value(value)
+    }
+}
+
 #[ocaml::native_func]
 pub fn rust_increment_bytes(bytes: ocaml::Value, first_n: ocaml::Value) -> ocaml::Value {
     let mut bytes = u8vec_from_ocaml_bytes(bytes);
@@ -28,7 +41,7 @@ pub fn rust_increment_bytes(bytes: ocaml::Value, first_n: ocaml::Value) -> ocaml
         bytes[i] += 1;
     }
 
-    return bytes.to_value();
+    return u8vec_to_ocaml_bytes(bytes);
 }
 
 #[ocaml::native_func]
@@ -52,7 +65,7 @@ pub fn rust_decrement_bytes(bytes: ocaml::Value, first_n: ocaml::Value) -> ocaml
         bytes[i] -= 1;
     }
 
-    return bytes.to_value();
+    return u8vec_to_ocaml_bytes(bytes);
 }
 
 #[ocaml::native_func]
