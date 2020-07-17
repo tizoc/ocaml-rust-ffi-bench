@@ -49,7 +49,7 @@ fn main() {
         "Result for increment_bytes dmz: {}",
         increment_bytes_result_dmz
     );
-    println!("Result for twice tmz: {}", twice_result_dmz);
+    println!("Result for twice dmz: {}", twice_result_dmz);
 
 
     ocaml::runtime::shutdown();
