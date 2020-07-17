@@ -69,6 +69,18 @@ pub fn rust_decrement_bytes(bytes: ocaml::Value, first_n: ocaml::Value) -> ocaml
 }
 
 #[ocaml::native_func]
+pub fn rust_decrement_bytes_inplace(bytes: ocaml::Value, first_n: ocaml::Value) -> ocaml::Value {
+    let mut bytes = OCamlBytes::from_value(bytes);
+    let first_n = first_n.int_val() as usize;
+
+    for i in 0..first_n {
+        unsafe { bytes.set_byte_unchecked(i, bytes.get_byte_unchecked(i) - 1); }
+    }
+
+    return bytes.to_value();
+}
+
+#[ocaml::native_func]
 pub fn rust_twice(num: ocaml::Value) -> ocaml::Value {
     let n = num.int_val();
     return ocaml::Value::int(n * 2);
